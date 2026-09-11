@@ -284,6 +284,10 @@ textarea:focus {
   gap: 12px;
 }
 
+.learning-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .field-grid > div {
   display: grid;
   gap: 8px;

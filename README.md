@@ -23,7 +23,7 @@ python3 -m http.server 8000
 - 学習日
 - 科目（国語・算数・社会・理科・音楽・体育・図工・道徳・英語・総合的な学習）
 - 本時の課題
-- 学び方（一人で学ぶ・友だちと学ぶ・先生と学ぶ）
+- 一人で・仲間と（やった・やらなかった）
 - 目標とする姿
 - 本時の評価
 - 学び方に対する振り返り
@@ -56,6 +56,7 @@ function doPost(e) {
     data.subject,
     data.task,
     data.learningMethod,
+    data.peerLearning,
     data.understanding,
     data.evaluation,
     data.content,

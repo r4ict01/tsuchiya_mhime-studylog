@@ -7,6 +7,7 @@ const dateInput = document.querySelector("#entry-date");
 const subjectInput = document.querySelector("#entry-subject");
 const taskInput = document.querySelector("#entry-task");
 const learningMethodInput = document.querySelector("#entry-learning-method");
+const peerLearningInput = document.querySelector("#entry-peer-learning");
 const understandingInput = document.querySelector("#entry-understanding");
 const evaluationInput = document.querySelector("#entry-evaluation");
 const contentInput = document.querySelector("#entry-content");
@@ -296,6 +297,7 @@ function loadEntryIntoForm(entry) {
   subjectInput.value = entry.subject;
   taskInput.value = entry.task || "";
   learningMethodInput.value = entry.learningMethod || "";
+  peerLearningInput.value = entry.peerLearning || "";
   understandingInput.value = entry.understanding;
   evaluationInput.value = entry.evaluation || "";
   contentInput.value = entry.content;
@@ -311,11 +313,12 @@ form.addEventListener("submit", async (event) => {
   const subject = subjectInput.value.trim();
   const task = taskInput.value.trim();
   const learningMethod = learningMethodInput.value;
+  const peerLearning = peerLearningInput.value;
   const understanding = Number(understandingInput.value);
   const evaluation = Number(evaluationInput.value);
   const content = contentInput.value.trim();
   const reflection = reflectionInput.value.trim();
-  if (!date || !subject || !task || !learningMethod || !understanding || !evaluation) {
+  if (!date || !subject || !task || !learningMethod || !peerLearning || !understanding || !evaluation) {
     updateSaveState("入力を確認");
     return;
   }
@@ -323,7 +326,7 @@ form.addEventListener("submit", async (event) => {
   const now = new Date().toISOString();
   const nextEntry = {
     id: existingIndex >= 0 ? entries[existingIndex].id : createId(),
-    date, subject, task, learningMethod, understanding, evaluation, content, reflection,
+    date, subject, task, learningMethod, peerLearning, understanding, evaluation, content, reflection,
     createdAt: existingIndex >= 0 ? entries[existingIndex].createdAt : now,
     updatedAt: now,
   };
@@ -350,6 +353,7 @@ dateInput.addEventListener("change", () => {
   subjectInput.value = "";
   taskInput.value = "";
   learningMethodInput.value = "";
+  peerLearningInput.value = "";
   understandingInput.value = "";
   evaluationInput.value = "";
   contentInput.value = "";

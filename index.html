@@ -60,7 +60,7 @@
           </div>
 
           <div class="before-class-notice">授業の終わりに入力しましょう</div>
-          <div class="field-grid">
+          <div class="field-grid learning-grid">
             <div>
               <label class="field-label" for="entry-learning-method">一人で</label>
               <select id="entry-learning-method" name="learningMethod" required>
@@ -70,7 +70,15 @@
               </select>
             </div>
             <div>
-              <label class="field-label" for="entry-evaluation">本時の評価</label>
+              <label class="field-label" for="entry-peer-learning">仲間と</label>
+              <select id="entry-peer-learning" name="peerLearning" required>
+                <option value="">選択してください</option>
+                <option value="やった">やった</option>
+                <option value="やらなかった">やらなかった</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="entry-evaluation">評価</label>
               <select id="entry-evaluation" name="evaluation" required>
                 <option value="">選択してください</option>
                 <option value="5">よく理解できた</option>
