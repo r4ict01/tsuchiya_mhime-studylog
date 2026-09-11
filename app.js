@@ -309,6 +309,7 @@ function loadEntryIntoForm(entry) {
   dateInput.value = entry.date;
   subjectInput.value = entry.subject;
   taskInput.value = entry.task || "";
+  goalInput.value = entry.goal || "";
   learningMethodInput.value = entry.learningMethod || "";
   soloEvaluationInput.value = entry.soloEvaluation || entry.evaluation || "";
   peerLearningInput.value = entry.peerLearning || "";
@@ -326,6 +327,7 @@ form.addEventListener("submit", async (event) => {
   const date = dateInput.value;
   const subject = subjectInput.value.trim();
   const task = taskInput.value.trim();
+  const goal = goalInput.value.trim();
   const learningMethod = learningMethodInput.value;
   const soloEvaluation = Number(soloEvaluationInput.value);
   const peerLearning = peerLearningInput.value;
@@ -343,7 +345,7 @@ form.addEventListener("submit", async (event) => {
   const now = new Date().toISOString();
   const nextEntry = {
     id: existingIndex >= 0 ? entries[existingIndex].id : createId(),
-    date, subject, task, learningMethod, soloEvaluation, peerLearning, peerEvaluation,
+    date, subject, task, goal, learningMethod, soloEvaluation, peerLearning, peerEvaluation,
     understanding, evaluation, content, reflection,
     createdAt: existingIndex >= 0 ? entries[existingIndex].createdAt : now,
     updatedAt: now,
@@ -370,6 +372,7 @@ dateInput.addEventListener("change", () => {
   }
   subjectInput.value = "";
   taskInput.value = "";
+  goalInput.value = "";
   learningMethodInput.value = "";
   soloEvaluationInput.value = "";
   peerLearningInput.value = "";
