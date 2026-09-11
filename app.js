@@ -1,11 +1,19 @@
 const STORAGE_KEY = "my-study-log.entries.v1";
 const GOOGLE_SHEETS_URL = "";
 const SUBJECTS = ["国語", "算数", "社会", "理科", "音楽", "体育", "図工", "道徳", "英語", "総合的な学習"];
+const UNDERSTANDING_OPTIONS = [
+  { value: "5", label: "よく理解できた" },
+  { value: "4", label: "だいたい理解できた" },
+  { value: "3", label: "ふつう" },
+  { value: "2", label: "少し難しかった" },
+  { value: "1", label: "まだ難しい" },
+];
 
 const form = document.querySelector("#study-form");
 const dateInput = document.querySelector("#entry-date");
 const subjectInput = document.querySelector("#entry-subject");
 const taskInput = document.querySelector("#entry-task");
+const goalInput = document.querySelector("#entry-goal");
 const learningMethodInput = document.querySelector("#entry-learning-method");
 const soloEvaluationInput = document.querySelector("#entry-solo-evaluation");
 const peerLearningInput = document.querySelector("#entry-peer-learning");
@@ -145,6 +153,7 @@ function renderEntries() {
         <span class="learning-method-badge">${escapeHtml(entry.subject)} ・ ${escapeHtml(entry.learningMethod || "学び方未設定")}</span>
       </div>
       ${entry.task ? `<p class="entry-task"><strong>本時の課題:</strong> ${escapeHtml(entry.task)}</p>` : ""}
+      ${entry.goal ? `<p class="entry-task"><strong>課題に対する自分の目指す姿:</strong> ${escapeHtml(entry.goal)}</p>` : ""}
       <div class="understanding">目標とする姿: <span aria-label="${entry.understanding}/5">${"★".repeat(entry.understanding)}${"☆".repeat(5 - entry.understanding)}</span></div>
       <div class="understanding">一人での評価: <span aria-label="${entry.soloEvaluation || entry.evaluation || "-"}/5">${entry.soloEvaluation || entry.evaluation ? `${"★".repeat(entry.soloEvaluation || entry.evaluation)}${"☆".repeat(5 - (entry.soloEvaluation || entry.evaluation))}` : "未設定"}</span></div>
       <div class="understanding">仲間との評価: <span aria-label="${entry.peerEvaluation || entry.evaluation || "-"}/5">${entry.peerEvaluation || entry.evaluation ? `${"★".repeat(entry.peerEvaluation || entry.evaluation)}${"☆".repeat(5 - (entry.peerEvaluation || entry.evaluation))}` : "未設定"}</span></div>
@@ -279,9 +288,21 @@ function updateSaveState(text) {
 function resetForm() {
   form.reset();
   dateInput.value = getTodayIso();
+  goalInput.value = "";
   editingLabel.textContent = "今日の学習記録を書いています";
   updateCharCount();
   updateSaveState("未保存");
+}
+
+function normalizeUnderstandingValue(value) {
+  const normalized = Number(value);
+  if ([5, 4, 3, 1].includes(normalized)) {
+    return normalized;
+  }
+  if (normalized === 2) {
+    return 3;
+  }
+  return "";
 }
 
 function loadEntryIntoForm(entry) {
@@ -292,7 +313,7 @@ function loadEntryIntoForm(entry) {
   soloEvaluationInput.value = entry.soloEvaluation || entry.evaluation || "";
   peerLearningInput.value = entry.peerLearning || "";
   peerEvaluationInput.value = entry.peerEvaluation || entry.evaluation || "";
-  understandingInput.value = entry.understanding;
+  understandingInput.value = normalizeUnderstandingValue(entry.understanding);
   contentInput.value = entry.content;
   reflectionInput.value = entry.reflection || entry.nextAction || "";
   editingLabel.textContent = `${formatDate(entry.date)}の記録を編集中`;
