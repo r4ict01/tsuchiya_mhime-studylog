@@ -60,22 +60,27 @@
           </div>
 
           <div class="before-class-notice">授業の終わりに入力しましょう</div>
-          <label class="field-label" for="entry-learning-method">一人で</label>
-          <select id="entry-learning-method" name="learningMethod" required>
-            <option value="">選択してください</option>
-            <option value="やった">やった</option>
-            <option value="やらなかった">やらなかった</option>
-          </select>
-
-          <label class="field-label" for="entry-evaluation">本時の評価</label>
-          <select id="entry-evaluation" name="evaluation" required>
-            <option value="">選択してください</option>
-            <option value="5">よく理解できた</option>
-            <option value="4">だいたい理解できた</option>
-            <option value="3">ふつう</option>
-            <option value="2">少し難しかった</option>
-            <option value="1">まだ難しい</option>
-          </select>
+          <div class="field-grid">
+            <div>
+              <label class="field-label" for="entry-learning-method">一人で</label>
+              <select id="entry-learning-method" name="learningMethod" required>
+                <option value="">選択してください</option>
+                <option value="やった">やった</option>
+                <option value="やらなかった">やらなかった</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="entry-evaluation">本時の評価</label>
+              <select id="entry-evaluation" name="evaluation" required>
+                <option value="">選択してください</option>
+                <option value="5">よく理解できた</option>
+                <option value="4">だいたい理解できた</option>
+                <option value="3">ふつう</option>
+                <option value="2">少し難しかった</option>
+                <option value="1">まだ難しい</option>
+              </select>
+            </div>
+          </div>
 
           <label class="field-label" for="entry-reflection">本時の振り返り</label>
           <textarea id="entry-reflection" name="reflection" rows="3" maxlength="240" placeholder="本時の学習を振り返って書いてみよう"></textarea>
