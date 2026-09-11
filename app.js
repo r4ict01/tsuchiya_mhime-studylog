@@ -7,9 +7,10 @@ const dateInput = document.querySelector("#entry-date");
 const subjectInput = document.querySelector("#entry-subject");
 const taskInput = document.querySelector("#entry-task");
 const learningMethodInput = document.querySelector("#entry-learning-method");
+const soloEvaluationInput = document.querySelector("#entry-solo-evaluation");
 const peerLearningInput = document.querySelector("#entry-peer-learning");
+const peerEvaluationInput = document.querySelector("#entry-peer-evaluation");
 const understandingInput = document.querySelector("#entry-understanding");
-const evaluationInput = document.querySelector("#entry-evaluation");
 const contentInput = document.querySelector("#entry-content");
 const reflectionInput = document.querySelector("#entry-reflection");
 const clearButton = document.querySelector("#clear-button");
@@ -23,11 +24,9 @@ const averageEvaluation = document.querySelector("#average-evaluation");
 const summaryRow = document.querySelector("#summary-row");
 const subjectFilter = document.querySelector("#subject-filter");
 const periodFilter = document.querySelector("#period-filter");
-const learningMethodFilter = document.querySelector("#learning-method-filter");
 const evaluationChart = document.querySelector("#evaluation-chart");
 const evaluationSubjectFilter = document.querySelector("#evaluation-subject-filter");
 const evaluationPeriodFilter = document.querySelector("#evaluation-period-filter");
-const evaluationLearningMethodFilter = document.querySelector("#evaluation-learning-method-filter");
 
 let entries = loadEntries();
 
@@ -100,15 +99,11 @@ function sortEntries() {
 function getFilteredEntries() {
   const selectedSubject = subjectFilter.value;
   const selectedPeriod = periodFilter.value;
-  const selectedLearningMethod = learningMethodFilter.value;
   const period = getPeriodRange(selectedPeriod);
   return entries.filter((entry) => {
     const matchesPeriod = !period || (entry.date >= period.start && entry.date <= period.end);
     const matchesSubject = selectedSubject === "all" || entry.subject === selectedSubject;
-    const matchesLearningMethod = selectedLearningMethod === "all"
-      || String(entry.learningMethod || "").trim() === selectedLearningMethod;
     return matchesSubject
-      && matchesLearningMethod
       && matchesPeriod;
   });
 }
@@ -151,7 +146,8 @@ function renderEntries() {
       </div>
       ${entry.task ? `<p class="entry-task"><strong>本時の課題:</strong> ${escapeHtml(entry.task)}</p>` : ""}
       <div class="understanding">目標とする姿: <span aria-label="${entry.understanding}/5">${"★".repeat(entry.understanding)}${"☆".repeat(5 - entry.understanding)}</span></div>
-      <div class="understanding">本時の評価: <span aria-label="${entry.evaluation || "-"}/5">${entry.evaluation ? `${"★".repeat(entry.evaluation)}${"☆".repeat(5 - entry.evaluation)}` : "未設定"}</span></div>
+      <div class="understanding">一人での評価: <span aria-label="${entry.soloEvaluation || entry.evaluation || "-"}/5">${entry.soloEvaluation || entry.evaluation ? `${"★".repeat(entry.soloEvaluation || entry.evaluation)}${"☆".repeat(5 - (entry.soloEvaluation || entry.evaluation))}` : "未設定"}</span></div>
+      <div class="understanding">仲間との評価: <span aria-label="${entry.peerEvaluation || entry.evaluation || "-"}/5">${entry.peerEvaluation || entry.evaluation ? `${"★".repeat(entry.peerEvaluation || entry.evaluation)}${"☆".repeat(5 - (entry.peerEvaluation || entry.evaluation))}` : "未設定"}</span></div>
       <p class="entry-note">${escapeHtml(entry.content)}</p>
       ${(entry.reflection || entry.nextAction) ? `<p class="next-action"><strong>本時の振り返り:</strong> ${escapeHtml(entry.reflection || entry.nextAction)}</p>` : ""}
       <div class="entry-actions">
@@ -190,11 +186,9 @@ function renderSummary() {
   renderEvaluationSubjectFilter();
   const selectedSubject = evaluationSubjectFilter.value;
   const selectedPeriod = evaluationPeriodFilter.value;
-  const selectedLearningMethod = evaluationLearningMethodFilter.value;
   const period = getPeriodRange(selectedPeriod);
   const evaluatedEntries = entries.filter((entry) =>
     (selectedSubject === "all" || entry.subject === selectedSubject)
-    && (selectedLearningMethod === "all" || String(entry.learningMethod || "").trim() === selectedLearningMethod)
     && (!period || (entry.date >= period.start && entry.date <= period.end))
     && Number.isInteger(Number(entry.evaluation))
     && Number(entry.evaluation) >= 1
@@ -216,12 +210,10 @@ function renderSummary() {
 
 function renderEvaluationChart() {
   const selectedSubject = evaluationSubjectFilter.value;
-  const selectedLearningMethod = evaluationLearningMethodFilter.value;
   const period = getPeriodRange(evaluationPeriodFilter.value);
   const evaluatedEntries = entries
     .filter((entry) =>
       (selectedSubject === "all" || entry.subject === selectedSubject)
-      && (selectedLearningMethod === "all" || String(entry.learningMethod || "").trim() === selectedLearningMethod)
       && (!period || (entry.date >= period.start && entry.date <= period.end))
       && Number.isInteger(Number(entry.evaluation))
       && Number(entry.evaluation) >= 1
@@ -297,9 +289,10 @@ function loadEntryIntoForm(entry) {
   subjectInput.value = entry.subject;
   taskInput.value = entry.task || "";
   learningMethodInput.value = entry.learningMethod || "";
+  soloEvaluationInput.value = entry.soloEvaluation || entry.evaluation || "";
   peerLearningInput.value = entry.peerLearning || "";
+  peerEvaluationInput.value = entry.peerEvaluation || entry.evaluation || "";
   understandingInput.value = entry.understanding;
-  evaluationInput.value = entry.evaluation || "";
   contentInput.value = entry.content;
   reflectionInput.value = entry.reflection || entry.nextAction || "";
   editingLabel.textContent = `${formatDate(entry.date)}の記録を編集中`;
@@ -313,12 +306,15 @@ form.addEventListener("submit", async (event) => {
   const subject = subjectInput.value.trim();
   const task = taskInput.value.trim();
   const learningMethod = learningMethodInput.value;
+  const soloEvaluation = Number(soloEvaluationInput.value);
   const peerLearning = peerLearningInput.value;
+  const peerEvaluation = Number(peerEvaluationInput.value);
   const understanding = Number(understandingInput.value);
-  const evaluation = Number(evaluationInput.value);
+  const evaluation = (soloEvaluation + peerEvaluation) / 2;
   const content = contentInput.value.trim();
   const reflection = reflectionInput.value.trim();
-  if (!date || !subject || !task || !learningMethod || !peerLearning || !understanding || !evaluation) {
+  if (!date || !subject || !task || !learningMethod || !peerLearning || !understanding
+    || !soloEvaluation || !peerEvaluation) {
     updateSaveState("入力を確認");
     return;
   }
@@ -326,7 +322,8 @@ form.addEventListener("submit", async (event) => {
   const now = new Date().toISOString();
   const nextEntry = {
     id: existingIndex >= 0 ? entries[existingIndex].id : createId(),
-    date, subject, task, learningMethod, peerLearning, understanding, evaluation, content, reflection,
+    date, subject, task, learningMethod, soloEvaluation, peerLearning, peerEvaluation,
+    understanding, evaluation, content, reflection,
     createdAt: existingIndex >= 0 ? entries[existingIndex].createdAt : now,
     updatedAt: now,
   };
@@ -353,9 +350,10 @@ dateInput.addEventListener("change", () => {
   subjectInput.value = "";
   taskInput.value = "";
   learningMethodInput.value = "";
+  soloEvaluationInput.value = "";
   peerLearningInput.value = "";
+  peerEvaluationInput.value = "";
   understandingInput.value = "";
-  evaluationInput.value = "";
   contentInput.value = "";
   reflectionInput.value = "";
   editingLabel.textContent = `${formatDate(dateInput.value)}の記録を書いています`;
@@ -371,10 +369,8 @@ form.addEventListener("input", () => {
 clearButton.addEventListener("click", resetForm);
 subjectFilter.addEventListener("change", renderEntries);
 periodFilter.addEventListener("change", renderEntries);
-learningMethodFilter.addEventListener("change", renderEntries);
 evaluationSubjectFilter.addEventListener("change", renderSummary);
 evaluationPeriodFilter.addEventListener("change", renderSummary);
-evaluationLearningMethodFilter.addEventListener("change", renderSummary);
 
 entryList.addEventListener("click", (event) => {
   const button = event.target.closest("button");

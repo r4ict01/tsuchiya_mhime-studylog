@@ -25,7 +25,7 @@ python3 -m http.server 8000
 - 本時の課題
 - 一人で・仲間と（やった・やらなかった）
 - 目標とする姿
-- 本時の評価
+- 一人での評価・仲間との評価
 - 学び方に対する振り返り
 - 本時の振り返り
 
@@ -56,7 +56,9 @@ function doPost(e) {
     data.subject,
     data.task,
     data.learningMethod,
+    data.soloEvaluation,
     data.peerLearning,
+    data.peerEvaluation,
     data.understanding,
     data.evaluation,
     data.content,
