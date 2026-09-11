@@ -315,7 +315,7 @@ form.addEventListener("submit", async (event) => {
   const evaluation = Number(evaluationInput.value);
   const content = contentInput.value.trim();
   const reflection = reflectionInput.value.trim();
-  if (!date || !subject || !task || !learningMethod || !understanding || !evaluation || !content) {
+  if (!date || !subject || !task || !learningMethod || !understanding || !evaluation) {
     updateSaveState("入力を確認");
     return;
   }
