@@ -193,6 +193,12 @@ textarea {
   min-height: 69px;
 }
 
+#entry-goal {
+  min-height: 44px;
+  height: 44px;
+  resize: none;
+}
+
 #entry-reflection {
   min-height: 69px;
 }
